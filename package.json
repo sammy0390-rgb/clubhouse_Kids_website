@@ -3,24 +3,27 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev --webpack",
-    "build": "next build --webpack",
-    "start": "next start",
-    "lint": "eslint"
+    "dev": "next dev",
+    "build": "next build",
+    "start": "node scripts/start.mjs",
+    "lint": "next lint",
+    "clean": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/clean-build.ps1",
+    "fresh": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/kill-node.ps1; npm run clean; npm run dev"
   },
   "dependencies": {
-    "next": "16.0.10",
-    "react": "19.2.1",
-    "react-dom": "19.2.1"
+    "next": "15.5.9",
+    "react": "19.0.0",
+    "react-dom": "19.0.0"
   },
   "devDependencies": {
-    "@tailwindcss/postcss": "^4",
-    "@types/node": "^20",
-    "@types/react": "^19",
-    "@types/react-dom": "^19",
-    "eslint": "^9",
-    "eslint-config-next": "16.0.10",
-    "tailwindcss": "^4",
-    "typescript": "^5"
+    "@types/node": "22.10.1",
+    "@types/react": "19.0.1",
+    "@types/react-dom": "19.0.1",
+    "autoprefixer": "10.4.20",
+    "eslint": "9.39.2",
+    "eslint-config-next": "15.5.9",
+    "postcss": "8.4.49",
+    "tailwindcss": "3.4.16",
+    "typescript": "5.7.2"
   }
 }
