@@ -1,8 +1,2 @@
-@tailwind utilities;
-
-/* NOTE:
-   This project is cloning a legacy Bootstrap theme pixel-for-pixel.
-   Tailwind's preflight (base reset) can subtly change typography/layout,
-   so we intentionally do NOT include `@tailwind base` or `@tailwind components`. */
-
+/* Empty CSS file - Next.js may require this */
 

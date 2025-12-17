@@ -59,6 +59,30 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       </head>
       <body id="page-top" data-spy="scroll" data-target=".navbar-custom" suppressHydrationWarning>
         {children}
+        {/* Hide preloader immediately when page loads */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              (function() {
+                // Hide preloader as soon as possible
+                function hidePreloader() {
+                  var preloader = document.getElementById('preloader');
+                  if (preloader) {
+                    preloader.style.display = 'none';
+                  }
+                }
+                // Try to hide immediately
+                if (document.readyState === 'loading') {
+                  document.addEventListener('DOMContentLoaded', hidePreloader);
+                } else {
+                  hidePreloader();
+                }
+                // Also hide on window load as fallback
+                window.addEventListener('load', hidePreloader);
+              })();
+            `,
+          }}
+        />
         {/* Fix Next.js paths to be absolute (not affected by base tag) */}
         <script
           dangerouslySetInnerHTML={{
@@ -84,21 +108,14 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           }}
         />
 
-        {/* Core JS (order matters) */}
-        <Script src="/clubhousekidsri/js/jquery.min.js" strategy="beforeInteractive" />
-        <Script src="/clubhousekidsri/js/bootstrap.min.js" strategy="beforeInteractive" />
+        {/* Core JS - Must load first for LayerSlider and Bootstrap */}
+        <Script src="/clubhousekidsri/js/jquery.min.js" strategy="afterInteractive" />
+        <Script src="/clubhousekidsri/js/bootstrap.min.js" strategy="afterInteractive" />
 
         {/* Optional: YouTube IFrame API used by the LayerSlider video layer */}
         <Script src="https://www.youtube.com/iframe_api" strategy="afterInteractive" />
 
-        {/* Theme/Plugins */}
-        <Script src="/clubhousekidsri/js/jquery.isotope.js" strategy="afterInteractive" />
-        <Script src="/clubhousekidsri/js/mc-validate.js" strategy="afterInteractive" />
-        <Script src="/clubhousekidsri/js/plugins.js" strategy="afterInteractive" />
-        <Script src="/clubhousekidsri/js/contact.js" strategy="afterInteractive" />
-        <Script src="/clubhousekidsri/js/prefixfree.js" strategy="afterInteractive" />
-
-        {/* LayerSlider deps */}
+        {/* LayerSlider deps - Must load before main.js */}
         <Script src="/clubhousekidsri/layerslider/js/greensock.js" strategy="afterInteractive" />
         <Script src="/clubhousekidsri/layerslider/js/layerslider.transitions.js" strategy="afterInteractive" />
         <Script src="/clubhousekidsri/layerslider/js/layerslider.kreaturamedia.jquery.js" strategy="afterInteractive" />
@@ -111,8 +128,60 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           strategy="afterInteractive"
         />
 
-        {/* Main theme bootstrapper (keep last) */}
+        {/* Theme/Plugins */}
+        <Script src="/clubhousekidsri/js/jquery.isotope.js" strategy="afterInteractive" />
+        <Script src="/clubhousekidsri/js/mc-validate.js" strategy="afterInteractive" />
+        <Script src="/clubhousekidsri/js/plugins.js" strategy="afterInteractive" />
+        <Script src="/clubhousekidsri/js/contact.js" strategy="afterInteractive" />
+        <Script src="/clubhousekidsri/js/prefixfree.js" strategy="afterInteractive" />
+
+        {/* Main theme bootstrapper (keep last - initializes LayerSlider) */}
         <Script src="/clubhousekidsri/js/main.js" strategy="afterInteractive" />
+        
+        {/* Ensure LayerSlider initializes after all dependencies are loaded */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              (function() {
+                // Wait for all scripts to load, then ensure LayerSlider is initialized
+                function initLayerSlider() {
+                  if (typeof jQuery !== 'undefined' && jQuery.fn.layerSlider && document.getElementById('layerslider')) {
+                    var $slider = jQuery('#layerslider');
+                    if ($slider.length && !$slider.data('layerSlider')) {
+                      // LayerSlider not initialized yet, initialize it
+                      $slider.layerSlider({
+                        responsive: true,
+                        responsiveUnder: 1280,
+                        layersContainer: 1280,
+                        skin: 'fullwidth',
+                        hoverPrevNext: false,
+                        skinsPath: '/clubhousekidsri/layerslider/skins/',
+                        autoStart: true,
+                        autoPlayVideos: false
+                      });
+                    }
+                  }
+                }
+                
+                // Try multiple times to ensure it initializes
+                if (document.readyState === 'loading') {
+                  document.addEventListener('DOMContentLoaded', function() {
+                    setTimeout(initLayerSlider, 100);
+                    setTimeout(initLayerSlider, 500);
+                    setTimeout(initLayerSlider, 1000);
+                  });
+                } else {
+                  setTimeout(initLayerSlider, 100);
+                  setTimeout(initLayerSlider, 500);
+                  setTimeout(initLayerSlider, 1000);
+                }
+                window.addEventListener('load', function() {
+                  setTimeout(initLayerSlider, 100);
+                });
+              })();
+            `,
+          }}
+        />
       </body>
     </html>
   );
