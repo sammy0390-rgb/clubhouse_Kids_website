@@ -1,6 +1,4 @@
 import type { Metadata } from "next";
-import Script from "next/script";
-import "./globals.css";
 
 export const metadata: Metadata = {
   title: "ClubHouse Kids - Children One Page HTML5",
@@ -9,9 +7,9 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en">
-      <head>
-        <base href="/clubhousekidsri/" />
+    <html lang="en" suppressHydrationWarning>
+      <head suppressHydrationWarning>
+        {/* No base tag - it interferes with Next.js. We'll fix relative paths in body content instead. */}
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
         <meta name="description" content="" />
@@ -59,30 +57,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       </head>
       <body id="page-top" data-spy="scroll" data-target=".navbar-custom" suppressHydrationWarning>
         {children}
-        {/* Hide preloader immediately when page loads */}
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `
-              (function() {
-                // Hide preloader as soon as possible
-                function hidePreloader() {
-                  var preloader = document.getElementById('preloader');
-                  if (preloader) {
-                    preloader.style.display = 'none';
-                  }
-                }
-                // Try to hide immediately
-                if (document.readyState === 'loading') {
-                  document.addEventListener('DOMContentLoaded', hidePreloader);
-                } else {
-                  hidePreloader();
-                }
-                // Also hide on window load as fallback
-                window.addEventListener('load', hidePreloader);
-              })();
-            `,
-          }}
-        />
         {/* Fix Next.js paths to be absolute (not affected by base tag) */}
         <script
           dangerouslySetInnerHTML={{
@@ -108,47 +82,47 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           }}
         />
 
-        {/* Core JS - Must load first for LayerSlider and Bootstrap */}
-        <Script src="/clubhousekidsri/js/jquery.min.js" strategy="afterInteractive" />
-        <Script src="/clubhousekidsri/js/bootstrap.min.js" strategy="afterInteractive" />
+        {/* Core JS - Load synchronously to avoid timing issues */}
+        <script src="/clubhousekidsri/js/jquery.min.js"></script>
+        <script src="/clubhousekidsri/js/bootstrap.min.js"></script>
 
         {/* Optional: YouTube IFrame API used by the LayerSlider video layer */}
-        <Script src="https://www.youtube.com/iframe_api" strategy="afterInteractive" />
+        <script src="https://www.youtube.com/iframe_api"></script>
 
         {/* LayerSlider deps - Must load before main.js */}
-        <Script src="/clubhousekidsri/layerslider/js/greensock.js" strategy="afterInteractive" />
-        <Script src="/clubhousekidsri/layerslider/js/layerslider.transitions.js" strategy="afterInteractive" />
-        <Script src="/clubhousekidsri/layerslider/js/layerslider.kreaturamedia.jquery.js" strategy="afterInteractive" />
+        <script src="/clubhousekidsri/layerslider/js/greensock.js"></script>
+        <script src="/clubhousekidsri/layerslider/js/layerslider.transitions.js"></script>
+        <script src="/clubhousekidsri/layerslider/js/layerslider.kreaturamedia.jquery.js"></script>
 
         {/* Leaflet JS for map (must load before main.js) */}
-        <Script
+        <script
           src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
           integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
           crossOrigin=""
-          strategy="afterInteractive"
-        />
+        ></script>
 
         {/* Theme/Plugins */}
-        <Script src="/clubhousekidsri/js/jquery.isotope.js" strategy="afterInteractive" />
-        <Script src="/clubhousekidsri/js/mc-validate.js" strategy="afterInteractive" />
-        <Script src="/clubhousekidsri/js/plugins.js" strategy="afterInteractive" />
-        <Script src="/clubhousekidsri/js/contact.js" strategy="afterInteractive" />
-        <Script src="/clubhousekidsri/js/prefixfree.js" strategy="afterInteractive" />
+        <script src="/clubhousekidsri/js/jquery.isotope.js"></script>
+        <script src="/clubhousekidsri/js/mc-validate.js"></script>
+        <script src="/clubhousekidsri/js/plugins.js"></script>
+        <script src="/clubhousekidsri/js/contact.js"></script>
+        <script src="/clubhousekidsri/js/prefixfree.js"></script>
 
         {/* Main theme bootstrapper (keep last - initializes LayerSlider) */}
-        <Script src="/clubhousekidsri/js/main.js" strategy="afterInteractive" />
+        <script src="/clubhousekidsri/js/main.js"></script>
         
         {/* Ensure LayerSlider initializes after all dependencies are loaded */}
         <script
           dangerouslySetInnerHTML={{
             __html: `
               (function() {
-                // Wait for all scripts to load, then ensure LayerSlider is initialized
+                var initialized = false;
                 function initLayerSlider() {
+                  if (initialized) return;
                   if (typeof jQuery !== 'undefined' && jQuery.fn.layerSlider && document.getElementById('layerslider')) {
                     var $slider = jQuery('#layerslider');
                     if ($slider.length && !$slider.data('layerSlider')) {
-                      // LayerSlider not initialized yet, initialize it
+                      initialized = true;
                       $slider.layerSlider({
                         responsive: true,
                         responsiveUnder: 1280,
@@ -163,20 +137,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                   }
                 }
                 
-                // Try multiple times to ensure it initializes
-                if (document.readyState === 'loading') {
-                  document.addEventListener('DOMContentLoaded', function() {
-                    setTimeout(initLayerSlider, 100);
-                    setTimeout(initLayerSlider, 500);
-                    setTimeout(initLayerSlider, 1000);
-                  });
-                } else {
-                  setTimeout(initLayerSlider, 100);
-                  setTimeout(initLayerSlider, 500);
-                  setTimeout(initLayerSlider, 1000);
-                }
+                // Single fallback check after main.js has had time to run
                 window.addEventListener('load', function() {
-                  setTimeout(initLayerSlider, 100);
+                  setTimeout(initLayerSlider, 500);
                 });
               })();
             `,
