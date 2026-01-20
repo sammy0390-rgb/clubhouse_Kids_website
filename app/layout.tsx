@@ -1,8 +1,34 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "ClubHouse Kids - Children One Page HTML5",
-  description: "",
+  title: "ClubHouse Kids Early Learning Center | Daycare in Warwick, RI",
+  description: "Quality daycare and early learning center in Warwick, RI. Infant care, toddler programs, preschool & pre-K. Certified teachers, small class sizes. Call 401-734-9888",
+  keywords: "daycare Warwick RI, preschool Warwick, infant care Rhode Island, early learning center, childcare Warwick, toddler daycare, pre-kindergarten Warwick",
+  authors: [{ name: "ClubHouse Kids Early Learning Center" }],
+  openGraph: {
+    title: "ClubHouse Kids - Premier Daycare in Warwick, Rhode Island",
+    description: "Nurturing early education for infants through pre-K in Warwick, RI. Certified teachers, small class sizes, safe environment.",
+    url: "https://clubhousekidsri.netlify.app",
+    siteName: "ClubHouse Kids Early Learning Center",
+    locale: "en_US",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "ClubHouse Kids Early Learning Center | Warwick, RI",
+    description: "Quality daycare and early learning in Warwick, RI. Infant care through pre-K programs.",
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
+  },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
@@ -12,8 +38,100 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         {/* No base tag - it interferes with Next.js. We'll fix relative paths in body content instead. */}
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
-        <meta name="description" content="" />
-        <meta name="author" content="" />
+        
+        {/* SEO Meta Tags */}
+        <meta name="geo.region" content="US-RI" />
+        <meta name="geo.placename" content="Warwick" />
+        <meta name="geo.position" content="41.8302341;-71.418062" />
+        <meta name="ICBM" content="41.8302341, -71.418062" />
+        <meta name="theme-color" content="#e91e63" />
+        
+        {/* Canonical URL */}
+        <link rel="canonical" href="https://clubhousekidsri.netlify.app/" />
+        
+        {/* Structured Data - Local Business Schema */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "ChildCare",
+              "@id": "https://clubhousekidsri.netlify.app/#organization",
+              "name": "ClubHouse Kids Early Learning Center",
+              "alternateName": "ClubHouse Kids",
+              "description": "Quality daycare and early learning center offering infant care, toddler programs, preschool and pre-kindergarten in Warwick, Rhode Island.",
+              "url": "https://clubhousekidsri.netlify.app",
+              "telephone": "+1-401-734-9888",
+              "faxNumber": "+1-401-734-4461",
+              "email": "info@clubhousekidsri.com",
+              "address": {
+                "@type": "PostalAddress",
+                "streetAddress": "220 Tollgate Road",
+                "addressLocality": "Warwick",
+                "addressRegion": "RI",
+                "postalCode": "02886",
+                "addressCountry": "US"
+              },
+              "geo": {
+                "@type": "GeoCoordinates",
+                "latitude": 41.8302341,
+                "longitude": -71.418062
+              },
+              "openingHoursSpecification": [
+                {
+                  "@type": "OpeningHoursSpecification",
+                  "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
+                  "opens": "06:30",
+                  "closes": "18:00"
+                }
+              ],
+              "priceRange": "$$",
+              "areaServed": {
+                "@type": "City",
+                "name": "Warwick",
+                "@id": "https://en.wikipedia.org/wiki/Warwick,_Rhode_Island"
+              },
+              "hasOfferCatalog": {
+                "@type": "OfferCatalog",
+                "name": "Childcare Services",
+                "itemListElement": [
+                  {
+                    "@type": "Offer",
+                    "itemOffered": {
+                      "@type": "Service",
+                      "name": "Infant Care",
+                      "description": "Loving infant care program for babies in a safe, nurturing environment"
+                    }
+                  },
+                  {
+                    "@type": "Offer",
+                    "itemOffered": {
+                      "@type": "Service",
+                      "name": "Toddler Program",
+                      "description": "Full day toddler daycare for children 18 months to 3 years"
+                    }
+                  },
+                  {
+                    "@type": "Offer",
+                    "itemOffered": {
+                      "@type": "Service",
+                      "name": "Preschool",
+                      "description": "Fun and educational preschool program"
+                    }
+                  },
+                  {
+                    "@type": "Offer",
+                    "itemOffered": {
+                      "@type": "Service",
+                      "name": "Pre-Kindergarten",
+                      "description": "Comprehensive pre-K program preparing children for kindergarten"
+                    }
+                  }
+                ]
+              }
+            })
+          }}
+        />
 
         {/* Bootstrap + theme styles */}
         <link href="/clubhousekidsri/css/bootstrap.css" rel="stylesheet" type="text/css" />
@@ -54,6 +172,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           href="/clubhousekidsri/apple-touch-icon-114x114.png"
         />
         <link rel="shortcut icon" href="/clubhousekidsri/favicon.ico" type="image/x-icon" />
+        
+        {/* PWA Manifest */}
+        <link rel="manifest" href="/clubhousekidsri/manifest.json" />
       </head>
       <body id="page-top" data-spy="scroll" data-target=".navbar-custom" suppressHydrationWarning>
         {children}
@@ -105,7 +226,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <script src="/clubhousekidsri/js/jquery.isotope.js"></script>
         <script src="/clubhousekidsri/js/mc-validate.js"></script>
         <script src="/clubhousekidsri/js/plugins.js"></script>
-        <script src="/clubhousekidsri/js/contact.js"></script>
+        {/* contact.js disabled - using Netlify Forms instead */}
         <script src="/clubhousekidsri/js/prefixfree.js"></script>
 
         {/* Main theme bootstrapper (keep last - initializes LayerSlider) */}
